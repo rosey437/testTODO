@@ -10,6 +10,19 @@ namespace Tareas.Controllers
     {
         public ActionResult Index()
         {
+            ItemsTablaModel tablaModelo= new ItemsTablaModel();
+
+List<ToDoItem> items= new List<ToDoItem>();
+
+var opcionesEstado= new List<string> {"Cerrado","EnPausa","EnProceso" };
+items.Add(new ToDoItem{ Id=1,Status="Abierto", AsignedTo=""});
+
+
+tablaModelo.Items= items;
+tablaModelo.OptionStatus= opcionesEstado;
+
+
+return View(tablaModelo);
             return View();
         }
 
