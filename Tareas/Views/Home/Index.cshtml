@@ -4,60 +4,126 @@
 
 
 
-    <div class="row">
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Status</th>
-                    <th>AsignedTo</th>
-                    <th>Next Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Items)
-                {
-                    <tr>
-                        <td>@item.Id</td>
-                        <td>@item.Status</td>
-                        <td>@item.AsignedTo</td>
-                        <td>
-                            <select id="StatusOption_@item.Id">
-                                @foreach (var itemOption in Model.OptionStatus)
-                                {
-                                    <option value="@itemOption">@itemOption</option>
-                                }
-                            </select>
-                        </td>
+<div class="row">
+    <table class="table table-striped table-bordered">
 
-                        <td>
-                            <a href="javascript::;" onclick="SaveItem('@item.Id', '@item.Status', $('#StatusOption_@item.Id option:selected').text())">Save</a>
-                        </td>
-                    </tr>
+        <tbody>
 
-                }
-            </tbody>
-        </table>
-    </div>
+            <tr>
+                <td>TICKET</td>
+            </tr>
+            <tr>
+                <td>
+                    Ticket ID: <input type="text" id="ticketId">
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Asignado: <input type="text" id="ticketAsignado">
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Descripcion: <input type="text" id="ticketDescripcion">
+
+                </td>
+
+
+            </tr>
+            <tr>
+                <td>
+                                  Estatus: 
+                    <select id="dropEstados">
+                        <option value="ABIERTO">ABIERTO</option>
+                        <option value="ASIGNADO">ASIGNADO</option>
+                        <option value="CERRADO">CERRADO</option>
+                        <option value="ENESPERA">ES ESPERA DE USUARIO</option>
+                        <option value="ENPROCESO">EN PROCESO</option>
+                        <option value="TERMINADO">TERMINADO</option>
+                    </select>
+
+                </td>
+
+
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value="Guardar">
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+
+
+</div>
 <script>
-function SaveItem(id,status,nextStatus)
-{
-item = { Id: id, Status: status, NextStatus: nextStatus }
+    function ObtenerTicket() {
 
-$.ajax({
-url: 'home/guardar',
-data: JSON.stringify(item),
-type: "POST",
-contentType:"application/json",
-success: function (mensaje) {
 
-alert(mensaje);
-},
-error: function () {
-alert('Something went wrong');
-}
-});
-}
+        $.ajax({
+            url: '/home/Ticket',
+            type: "GET",
+            contentType: "application/json",
+            success: function (datos) {
+
+                $('#ticketId').val("valor inicial");
+
+                //pasando valores a la forma
+                document.getElementById("ticketId").value = datos.TicketId;
+                document.getElementById("ticketDescripcion").value = datos.Description;
+                document.getElementById("ticketAsignado").value = datos.AsignatedTo;
+         
+                //
+                SeleccionarDropDownStatus(datos.Status);
+
+
+                console.log('se cargaron datos ok');
+            },
+            error: function () {
+                alert('Something went wrong');
+            }
+        });
+    }
+
+    function SeleccionarDropDownStatus(estadoActual)
+    {
+
+        console.log(estadoActual);
+        //pendiente por inhabilitar los estados deacuerdo a 
+        //  //ABIERTO, ASIGNADO, CERRADO, ES ESPERA DE USUARIO, EN PROCESO, TERMINADO
+        $('#dropEstados').val(estadoActual);
+     
+    }
+
+    function GuardarTicket() {
+
+       var nextStatus= $("#selector option:selected");
+
+        item = { Id: id, Status: status, NextStatus: nextStatus }
+
+        $.ajax({
+            url: 'home/guardar',
+            data: JSON.stringify(item),
+            type: "POST",
+            contentType: "application/json",
+            success: function (mensaje) {
+
+                alert(mensaje);
+            },
+            error: function () {
+                alert('Something went wrong');
+            }
+        });
+    }
+
+    //carga inicial de datos
+
+    window.addEventListener('load', function () {
+        ObtenerTicket();
+    }, false);
+
 
 </script>
