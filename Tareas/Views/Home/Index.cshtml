@@ -34,7 +34,7 @@
             </tr>
             <tr>
                 <td>
-                                  Estatus: 
+                    Estatus:
                     <select id="dropEstados">
                         <option value="ABIERTO">ABIERTO</option>
                         <option value="ASIGNADO">ASIGNADO</option>
@@ -43,14 +43,14 @@
                         <option value="ENPROCESO">EN PROCESO</option>
                         <option value="TERMINADO">TERMINADO</option>
                     </select>
-
+                    <input type="hidden" id="ticketStatusInicial" value="">
                 </td>
 
 
             </tr>
             <tr>
                 <td>
-                    <input type="submit" value="Guardar">
+                    <input type="submit" value="Guardar" onclick="GuardarTicket();  false;">
                 </td>
             </tr>
 
@@ -77,6 +77,8 @@
                 document.getElementById("ticketAsignado").value = datos.AsignatedTo;
          
                 //
+                document.getElementById("ticketStatusInicial").value = datos.Status;
+                
                 SeleccionarDropDownStatus(datos.Status);
 
 
@@ -100,12 +102,28 @@
 
     function GuardarTicket() {
 
-       var nextStatus= $("#selector option:selected");
+    
+        var id = document.getElementById("ticketId").value;
+        var descripcion = document.getElementById("ticketDescripcion").value;
+        var asignado = document.getElementById("ticketAsignado").value;
+        var statusInicial = document.getElementById("ticketStatusInicial").value;
+         var statusSeleccionado= $("#dropEstados option:selected").val();        
+                TicketId = 5,
+                AsignatedTo = "",
+                Description = "Atencion de Emails",
+                Status = "CERRADO"
 
-        item = { Id: id, Status: status, NextStatus: nextStatus }
+
+        item = {
+            TicketId: id,
+            AsignatedTo: asignado,
+            Description: descripcion,
+            Status: statusInicial,
+            StatusSeleccionado: statusSeleccionado
+        }
 
         $.ajax({
-            url: 'home/guardar',
+            url: '/home/Ticket',
             data: JSON.stringify(item),
             type: "POST",
             contentType: "application/json",
@@ -117,6 +135,8 @@
                 alert('Something went wrong');
             }
         });
+
+       
     }
 
     //carga inicial de datos
